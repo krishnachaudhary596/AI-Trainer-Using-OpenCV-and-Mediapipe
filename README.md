@@ -1,0 +1,1 @@
+# AI-Trainer-Using-OpenCV-and-Mediapipe
