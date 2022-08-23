@@ -1,18 +1,24 @@
-import streamlit as st
 import cv2
-import mediapipe as mp
 import numpy as np
+import mediapipe as mp
+import streamlit as st
 
 mp_drawing = mp.solutions.drawing_utils
 mp_pose = mp.solutions.pose
 
+# Streamlit Code
 
-# Calculate Angles
+st.title('AI Trainer Application using MediaPipe')
+# st.header('The trainer will start automatically check your taskbar')
+st.write('Press q to stop tracking your workout and F5 to start it again')
+
+
+# Calculating Angles
 
 def calculate_angle(a, b, c):
-    a = np.array(a)  # First
-    b = np.array(b)  # Mid
-    c = np.array(c)  # End
+    a = np.array(a)
+    b = np.array(b)
+    c = np.array(c)
 
     radians = np.arctan2(c[1] - b[1], c[0] - b[0]) - np.arctan2(a[1] - b[1], a[0] - b[0])
     angle = np.abs(radians * 180.0 / np.pi)
@@ -25,7 +31,11 @@ def calculate_angle(a, b, c):
 
 # Curl Counter
 
-cap = cv2.VideoCapture(0)
+start = st.button(label='Start')
+
+if start:
+    cap = cv2.VideoCapture(0)
+# stop = st.button(label='Stop')
 
 # Curl counter variables
 counter = 0
@@ -104,9 +114,11 @@ with mp_pose.Pose(min_detection_confidence=0.5, min_tracking_confidence=0.5) as 
                                   )
 
         cv2.imshow('Mediapipe Feed', image)
-
+        # stop = st.button(label='Stop')
         if cv2.waitKey(10) & 0xFF == ord('q'):
             break
 
     cap.release()
     cv2.destroyAllWindows()
+st.balloons()
+st.write('Great you have done very well')
