@@ -1,18 +1,20 @@
-import streamlit as st
 import cv2
-import mediapipe as mp
 import numpy as np
+import mediapipe as mp
+import streamlit as st
 
 mp_drawing = mp.solutions.drawing_utils
 mp_pose = mp.solutions.pose
 
+st.snow()
+st.title('AI Trainer Application using MediaPipe')
 
-# Calculate Angles
+# Calculating Angles
 
 def calculate_angle(a, b, c):
-    a = np.array(a)  # First
-    b = np.array(b)  # Mid
-    c = np.array(c)  # End
+    a = np.array(a)
+    b = np.array(b)
+    c = np.array(c)
 
     radians = np.arctan2(c[1] - b[1], c[0] - b[0]) - np.arctan2(a[1] - b[1], a[0] - b[0])
     angle = np.abs(radians * 180.0 / np.pi)
@@ -25,7 +27,11 @@ def calculate_angle(a, b, c):
 
 # Curl Counter
 
-cap = cv2.VideoCapture(0)
+start = st.button(label='Start')
+st.write('Press q to stop tracking your workout and F5 to start it again')
+
+if start:
+    cap = cv2.VideoCapture(0)
 
 # Curl counter variables
 counter = 0
@@ -74,17 +80,16 @@ with mp_pose.Pose(min_detection_confidence=0.5, min_tracking_confidence=0.5) as 
             if angle < 30 and stage == 'down':
                 stage = "up"
                 counter += 1
-                print(counter)
 
         except:
             pass
 
         # Render curl counter
         # Setup status box
-        cv2.rectangle(image, (0, 0), (225, 73), (245, 117, 16), -1)
+        cv2.rectangle(image, (0, 0), (235, 70), (245, 117, 16), -1)
 
         # Rep data
-        cv2.putText(image, 'REPS', (15, 12),
+        cv2.putText(image, 'REPS', (12, 12),
                     cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 0), 1, cv2.LINE_AA)
         cv2.putText(image, str(counter),
                     (10, 60),
@@ -104,9 +109,11 @@ with mp_pose.Pose(min_detection_confidence=0.5, min_tracking_confidence=0.5) as 
                                   )
 
         cv2.imshow('Mediapipe Feed', image)
-
+        # stop = st.button(label='Stop')
         if cv2.waitKey(10) & 0xFF == ord('q'):
             break
 
     cap.release()
     cv2.destroyAllWindows()
+st.balloons()
+st.write('Great you have done very well')
